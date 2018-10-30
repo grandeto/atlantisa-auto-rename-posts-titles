@@ -9,19 +9,19 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Author URI: https://atlantisa.com
  * License: Apache License 2.0
  */
- 
+
 // Prepare admin menu
 add_action('admin_menu', 'atlantisa_auto_rename_posts_titles_menu');
 function atlantisa_auto_rename_posts_titles_menu() {
-	add_submenu_page('options-general.php', 'Atlantisa Auto Rename Posts Titles Settings', 'Atlantisa Auto Rename Posts Titles', 'administrator', 'atlantisa-auto-rename-posts-titles-settings', 'atlantisa_auto_rename_posts_titles_settings_page');
+    add_submenu_page('options-general.php', 'Atlantisa Auto Rename Posts Titles Settings', 'Atlantisa Auto Rename Posts Titles', 'administrator', 'atlantisa-auto-rename-posts-titles-settings', 'atlantisa_auto_rename_posts_titles_settings_page');
 }
 
 // Prepare plugin settings page
 add_action( 'admin_init', 'atlantisa_auto_rename_posts_titles_settings' );
 function atlantisa_auto_rename_posts_titles_settings() {
-	register_setting( 'atlantisa-auto-rename-posts-titles-settings-group', 'atlantisa_auto_post_title' );
-	register_setting( 'atlantisa-auto-rename-posts-titles-settings-group', 'atlantisa_add_date_to_title' );
-	register_setting( 'atlantisa-auto-rename-posts-titles-settings-group', 'atlantisa_title_delimiter' );
+    register_setting( 'atlantisa-auto-rename-posts-titles-settings-group', 'atlantisa_auto_post_title' );
+    register_setting( 'atlantisa-auto-rename-posts-titles-settings-group', 'atlantisa_add_date_to_title' );
+    register_setting( 'atlantisa-auto-rename-posts-titles-settings-group', 'atlantisa_title_delimiter' );
 }
 
 
@@ -29,22 +29,22 @@ function atlantisa_auto_rename_posts_titles_settings() {
 // Implement the main functionality
 add_filter('wp_insert_post_data','reset_post_date',99,2);
 function reset_post_date($data, $postarr) {
-	$atlantisaTitle = esc_attr( get_option('atlantisa_auto_post_title') );
-	$atlantisaDate = esc_attr( get_option('atlantisa_add_date_to_title') );
-	$atlantisaDate = ($atlantisaDate != "" ? $atlantisaDate : "");
-	$atlantisaDelimeter = ($atlantisaDate != "" ? ' - ' : "");
-	
-	if (get_post_type($post) == 'post' && $atlantisaTitle != "") {
-		$data['post_date'] = $data['post_modified'];
-		$data['post_date_gmt'] = $data['post_modified_gmt'];
-		//Add post meta to post title
-		$data['post_title'] = $atlantisaTitle . $atlantisaDelimeter . current_time($atlantisaDate);
-		//Update the slug of the post for the URL
-		$data['post_name'] = wp_unique_post_slug( sanitize_title( $data['post_title'] ), $postarr['ID'], $data['post_status'],$data['post_type'], $data['post_parent'] );
-		return $data;  
-	} else {
-		return $data;
-	}
+    $atlantisaTitle = esc_attr( get_option('atlantisa_auto_post_title') );
+    $atlantisaDate = esc_attr( get_option('atlantisa_add_date_to_title') );
+    $atlantisaDate = ($atlantisaDate != "" ? $atlantisaDate : "");
+    $atlantisaDelimeter = ($atlantisaDate != "" ? ' - ' : "");
+    
+    if (get_post_type($post) == 'post' && $atlantisaTitle != "") {
+        $data['post_date'] = $data['post_modified'];
+        $data['post_date_gmt'] = $data['post_modified_gmt'];
+        //Add post meta to post title
+        $data['post_title'] = $atlantisaTitle . $atlantisaDelimeter . current_time($atlantisaDate);
+        //Update the slug of the post for the URL
+        $data['post_name'] = wp_unique_post_slug( sanitize_title( $data['post_title'] ), $postarr['ID'], $data['post_status'],$data['post_type'], $data['post_parent'] );
+        return $data;  
+    } else {
+        return $data;
+    }
 }
 
 // Get user options
@@ -61,13 +61,13 @@ function atlantisa_auto_rename_posts_titles_settings_page() {
         <th scope="row">My Auto Post Title</th>
         <td><input type="text" name="atlantisa_auto_post_title" value="<?php echo esc_attr( get_option('atlantisa_auto_post_title') ); ?>" /></td>
         </tr>
-		
-		<tr valign="top">
+        
+        <tr valign="top">
         <th scope="row">Delimiter</th>
         <td><input type="text" name="atlantisa_title_delimiter" value="<?php echo esc_attr( get_option('atlantisa_title_delimiter') ); ?>" /></td>
         </tr>
-		
-		<tr valign="top">
+        
+        <tr valign="top">
         <th scope="row">Add Date To Title ( d.m.Y )</th>
         <td><input type="text" name="atlantisa_add_date_to_title" value="<?php echo esc_attr( get_option('atlantisa_add_date_to_title') ); ?>" /></td>
         </tr>
